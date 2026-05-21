@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pillsnap – Medikamente dokumentieren</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:           #f7f4ef;
+    --surface:      #ffffff;
+    --text:         #1a1814;
+    --muted:        #6b6760;
+    --faint:        #b5b2ac;
+    --accent:       #534AB7;
+    --accent-light: #eceafa;
+    --border:       #d8d4cd;
+    --surface-alt:  #ede9e2;
+    --radius:       12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:           #13111a;
+      --surface:      #1e1b26;
+      --text:         #f4f1ff;
+      --muted:        #9ca3af;
+      --faint:        #6b6760;
+      --accent-light: #1e1a50;
+      --border:       #2d2b38;
+      --surface-alt:  #28242f;
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .page { max-width: 780px; margin: 0 auto; padding: 64px 48px; }
+
+  .header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 0.5px solid var(--border); padding-bottom: 20px; margin-bottom: 52px;
+  }
+
+  .wordmark { font-family: 'Playfair Display', serif; font-size: 26px; letter-spacing: -0.5px; color: var(--text); }
+  .wordmark span { color: var(--accent); }
+
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+  .doc-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); font-weight: 500; }
+
+  .lang-switch { display: flex; gap: 0.5rem; }
+  .lang-btn {
+    padding: 0.25rem 0.75rem; border-radius: 999px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); font-size: 0.75rem; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s; font-family: inherit;
+  }
+  .lang-btn.active { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+  [data-lang] { display: none; }
+  [data-lang].visible { display: block; }
+
+  .hero { margin-bottom: 56px; }
+
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 18px; }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif; font-size: 42px;
+    line-height: 1.18; letter-spacing: -0.8px; color: var(--text);
+    margin-bottom: 24px; max-width: 560px;
+  }
+
+  .hero-headline em { font-style: italic; color: var(--accent); }
+  .hero-sub { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.7; }
+
+  .rule { border: none; border-top: 0.5px solid var(--border); margin: 44px 0; }
+
+  .section-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-bottom: 20px; }
+
+  .problem-quote {
+    font-family: 'Playfair Display', serif; font-size: 22px; font-style: italic;
+    color: var(--text); line-height: 1.5; padding-left: 20px;
+    border-left: 2px solid var(--accent); margin-bottom: 16px;
+  }
+
+  .problem-text { color: var(--muted); font-size: 14px; }
+
+  .science {
+    background: var(--accent-light); border-radius: var(--radius);
+    padding: 20px 24px; margin: 32px 0; display: flex; align-items: flex-start; gap: 20px;
+  }
+
+  .science-number { font-family: 'Playfair Display', serif; font-size: 38px; color: var(--accent); line-height: 1; flex-shrink: 0; font-weight: 600; }
+  .science-text { font-size: 13px; color: var(--muted); padding-top: 4px; }
+  .science-text strong { display: block; font-size: 14px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+
+  .col-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .col-head { font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 10px; color: var(--text); }
+  .col-text { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  .flow { display: flex; margin-top: 8px; }
+
+  .flow-step {
+    flex: 1; text-align: center; padding: 20px 12px;
+    background: var(--surface); border: 0.5px solid var(--border); position: relative;
+  }
+
+  .flow-step:not(:first-child) { border-left: none; }
+  .flow-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .flow-step:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+
+  .flow-step:not(:last-child)::after {
+    content: '→'; position: absolute; right: -10px; top: 50%;
+    transform: translateY(-50%); color: var(--faint); font-size: 14px; z-index: 1;
+  }
+
+  .flow-tap { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+  .flow-label { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.35; }
+
+  /* Features */
+  .features { display: flex; flex-direction: column; margin-top: 8px; }
+  .feature { display: flex; gap: 16px; padding: 16px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .feature:first-child { border-top: 0.5px solid var(--border); }
+  .feature-num { font-family: 'Playfair Display', serif; font-size: 13px; color: var(--faint); flex-shrink: 0; padding-top: 2px; width: 20px; }
+  .feature-body strong { display: block; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .feature-body p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* Not list */
+  .not-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .not-tag { font-size: 12px; color: var(--muted); background: var(--surface); border: 0.5px solid var(--border); padding: 5px 12px; border-radius: 20px; text-decoration: line-through; text-decoration-color: var(--accent); }
+
+  /* Positioning */
+  .positioning { background: var(--text); padding: 32px 36px; border-radius: var(--radius); margin-top: 8px; }
+  .positioning p { font-family: 'Playfair Display', serif; font-size: 19px; font-style: italic; line-height: 1.6; color: var(--bg); }
+  .positioning p em { color: #a89fe8; font-style: normal; }
+
+  /* Footer */
+  footer { margin-top: 56px; padding-top: 20px; border-top: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  footer span { font-size: 12px; color: var(--faint); }
+  footer a { font-size: 12px; color: var(--faint); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .page { padding: 40px 24px; }
+    .two-col { grid-template-columns: 1fr; }
+    .hero-headline { font-size: 30px; }
+    .flow { flex-direction: column; }
+    .flow-step:not(:first-child) { border-left: 0.5px solid var(--border); border-top: none; }
+    .flow-step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+    .flow-step:last-child  { border-radius: 0 0 var(--radius) var(--radius); }
+    .flow-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -12px; transform: none; }
+    .header { flex-direction: column; gap: 8px; }
+    .header-right { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="wordmark">Pill<span>snap</span></div>
+    <div class="header-right">
+      <div class="doc-label">App Store — 2026</div>
+      <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('de')">Deutsch</button>
+        <button class="lang-btn" onclick="setLang('en')">English</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- DEUTSCH -->
+  <div data-lang="de" class="visible">
+
+  <section class="hero">
+    <div class="hero-eyebrow">App Store</div>
+    <h1 class="hero-headline">Der persönliche Nachweis,<br>dass du deine <em>Medikamente</em><br>wirklich genommen hast.</h1>
+    <p class="hero-sub">Pillsnap erinnert dich zur richtigen Zeit und dokumentiert jede Einnahme mit einem Foto – auf deinem Gerät, ohne Cloud. Kein Zettelchaos, kein Erraten aus dem Bauchgefühl. Ein klarer, visueller Nachweis für dich und deinen Arzt.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Das Problem</div>
+    <div class="problem-quote">"Hab ich die Tablette heute Morgen genommen? Ich glaube schon…"</div>
+    <p class="problem-text">Für Menschen, die täglich Medikamente einnehmen, ist dieser Moment alltäglich. Eine Doppeleinnahme riskieren oder eine Dosis auslassen – beides ist keine Option. Das Gedächtnis ist unzuverlässig. Ein Foto ist es nicht.</p>
+    <div class="science">
+      <div class="science-number">50 %</div>
+      <div class="science-text">
+        <strong>Medikamente werden nur halb so gut eingenommen wie verordnet.</strong>
+        Studien zeigen: rund die Hälfte aller Patienten nimmt verschriebene Medikamente nicht korrekt oder regelmäßig ein. Nicht aus Gleichgültigkeit – sondern weil Vergessen menschlich ist.
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Die Lösung</div>
+    <div class="two-col">
+      <div class="col-card">
+        <h2 class="col-head">Foto statt Erinnerung</h2>
+        <p class="col-text">Nach jeder Einnahme fotografierst du kurz die Packung oder Tablette. Das Foto wird mit Uhrzeit und Datum gespeichert – als unveränderlicher Nachweis. Kein Vertrauen in das eigene Gedächtnis mehr nötig.</p>
+      </div>
+      <div class="col-card">
+        <h2 class="col-head">Alles bleibt auf deinem Gerät</h2>
+        <p class="col-text">Pillsnap hat keinen Server, kein Account, keine Cloud. Alle Daten – Fotos, Einnahme-Protokoll, Erinnerungen – liegen ausschließlich lokal. Manuelles Backup bei Bedarf. Vollständige Kontrolle bei dir.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Core Flow — Einnahme dokumentieren</div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-tap">Start</div>
+        <div class="flow-label">Erinnerung<br><span style="font-size:11px;color:var(--faint);">pünktlich zur Einnahmezeit</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-tap">Schritt 1</div>
+        <div class="flow-label">Kamera öffnen<br><span style="font-size:11px;color:var(--faint);">ein Tap auf die Karte</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-tap">Schritt 2</div>
+        <div class="flow-label">Foto aufnehmen<br><span style="font-size:11px;color:var(--faint);">Packung oder Tablette</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-tap">Fertig</div>
+        <div class="flow-label">Dokumentiert ✓<br><span style="font-size:11px;color:var(--faint);">mit Uhrzeit & Datum</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">MVP — Kernfeatures</div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-num">01</div>
+        <div class="feature-body">
+          <strong>Foto-Dokumentation</strong>
+          <p>Fotografiere nach jeder Einnahme die Packung oder Tablette. Das Foto bleibt mit Zeitstempel auf deinem Gerät und dient als persönlicher, unveränderlicher Nachweis.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">02</div>
+        <div class="feature-body">
+          <strong>Individuelle Erinnerungen</strong>
+          <p>Lege pro Medikament beliebige Einnahmezeiten fest – täglich, jeden zweiten Tag, wöchentlich oder auf Intervall. Pillsnap erinnert dich pünktlich per Benachrichtigung.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">03</div>
+        <div class="feature-body">
+          <strong>Einnahme-Kalender</strong>
+          <p>Die Monatsansicht zeigt mit Farbkodierung, wie zuverlässig du an jedem Tag warst. Grün, gelb, orange – auf einen Blick, ohne Detailsuche.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">04</div>
+        <div class="feature-body">
+          <strong>Export für Arztgespräche</strong>
+          <p>Exportiere dein Einnahme-Protokoll als PDF oder CSV – übersichtlich aufbereitet mit Datum, Medikament, Dosierung und Foto-Nachweis. Praktisch beim nächsten Termin.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Was Pillsnap nicht ist</div>
+    <div class="not-list">
+      <span class="not-tag">Medizinprodukt</span>
+      <span class="not-tag">ärztliche Beratung</span>
+      <span class="not-tag">Cloud-Dienst</span>
+      <span class="not-tag">Abo-Modell</span>
+      <span class="not-tag">Backend / Server</span>
+      <span class="not-tag">Account erforderlich</span>
+      <span class="not-tag">Werbung</span>
+      <span class="not-tag">geteilte Daten</span>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Positionierung</div>
+    <div class="positioning">
+      <p>Für gesundheitsbewusste Menschen zwischen 40 und 60, die täglich Medikamente einnehmen und sich dabei auf mehr als ihr Gedächtnis verlassen wollen – <em>ein stiller, zuverlässiger Begleiter, der nie urteilt.</em></p>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Stefan Hermann · Pillsnap</span>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="privacy.html">Datenschutz</a>
+      <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>
+      <span>2026</span>
+    </div>
+  </footer>
+
+  </div><!-- /de -->
+
+  <!-- ENGLISH -->
+  <div data-lang="en">
+
+  <section class="hero">
+    <div class="hero-eyebrow">App Store</div>
+    <h1 class="hero-headline">The personal proof that<br>you actually took your<br><em>medication</em>.</h1>
+    <p class="hero-sub">Pillsnap reminds you at the right time and documents every dose with a photo – on your device, without a cloud. No paper chaos, no guessing from gut feeling. Clear, visual proof for yourself and your doctor.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">The Problem</div>
+    <div class="problem-quote">"Did I take my pill this morning? I think so…"</div>
+    <p class="problem-text">For people who take medication daily, this moment is all too familiar. Risk a double dose or skip one – neither is an option. Memory is unreliable. A photo isn't.</p>
+    <div class="science">
+      <div class="science-number">50%</div>
+      <div class="science-text">
+        <strong>Medications are taken only half as consistently as prescribed.</strong>
+        Studies show: around half of all patients don't take prescribed medications correctly or regularly. Not out of indifference – but because forgetting is human.
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">The Solution</div>
+    <div class="two-col">
+      <div class="col-card">
+        <h2 class="col-head">Photo instead of memory</h2>
+        <p class="col-text">After each dose, you quickly photograph the packaging or pill. The photo is saved with time and date – as an immutable record. No more relying on your own memory.</p>
+      </div>
+      <div class="col-card">
+        <h2 class="col-head">Everything stays on your device</h2>
+        <p class="col-text">Pillsnap has no server, no account, no cloud. All data – photos, intake log, reminders – is stored locally only. Manual backup when needed. Full control stays with you.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Core Flow — Documenting a dose</div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-tap">Start</div>
+        <div class="flow-label">Reminder<br><span style="font-size:11px;color:var(--faint);">right on time</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-tap">Step 1</div>
+        <div class="flow-label">Open camera<br><span style="font-size:11px;color:var(--faint);">one tap on the card</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-tap">Step 2</div>
+        <div class="flow-label">Take photo<br><span style="font-size:11px;color:var(--faint);">packaging or pill</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-tap">Done</div>
+        <div class="flow-label">Documented ✓<br><span style="font-size:11px;color:var(--faint);">with time & date</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">MVP — Core features</div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-num">01</div>
+        <div class="feature-body">
+          <strong>Photo documentation</strong>
+          <p>Photograph your packaging or pill after each dose. The photo stays with a timestamp on your device and serves as a personal, immutable record.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">02</div>
+        <div class="feature-body">
+          <strong>Individual reminders</strong>
+          <p>Set any intake times per medication – daily, every other day, weekly, or on a custom interval. Pillsnap reminds you on time via notification.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">03</div>
+        <div class="feature-body">
+          <strong>Intake calendar</strong>
+          <p>The month view shows color-coded how reliable you were each day. Green, yellow, orange – at a glance, without hunting for details.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">04</div>
+        <div class="feature-body">
+          <strong>Export for doctor visits</strong>
+          <p>Export your intake log as PDF or CSV – neatly formatted with date, medication, dosage, and photo record. Handy for your next appointment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">What Pillsnap is not</div>
+    <div class="not-list">
+      <span class="not-tag">medical device</span>
+      <span class="not-tag">medical advice</span>
+      <span class="not-tag">cloud service</span>
+      <span class="not-tag">subscription</span>
+      <span class="not-tag">backend / server</span>
+      <span class="not-tag">account required</span>
+      <span class="not-tag">ads</span>
+      <span class="not-tag">shared data</span>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Positioning</div>
+    <div class="positioning">
+      <p>For health-conscious people between 40 and 60 who take daily medication and want to rely on more than their memory – <em>a quiet, dependable companion that never judges.</em></p>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Stefan Hermann · Pillsnap</span>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="privacy.html">Privacy</a>
+      <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>
+      <span>2026</span>
+    </div>
+  </footer>
+
+  </div><!-- /en -->
+
+</div>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.classList.toggle('visible', el.dataset.lang === lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.trim().toLowerCase().startsWith(lang === 'de' ? 'd' : 'e'));
+    });
+    document.documentElement.lang = lang;
+    localStorage.setItem('pillsnap-lang', lang);
+  }
+
+  (function () {
+    const saved = localStorage.getItem('pillsnap-lang');
+    if (saved && saved !== 'de') setLang(saved);
+  })();
+</script>
+</body>
+</html>

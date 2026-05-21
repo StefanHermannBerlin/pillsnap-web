@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datenschutzerklärung – Pillsnap</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #f7f4ef;
+      --surface: #ffffff;
+      --text:    #1a1814;
+      --muted:   #6b6760;
+      --accent:  #534AB7;
+      --accent-light: #eceafa;
+      --border:  #d8d4cd;
+      --radius:  12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #13111a;
+        --surface: #1e1b26;
+        --text:    #f4f1ff;
+        --muted:   #9ca3af;
+        --accent-light: #1e1a50;
+        --border:  #2d2b38;
+      }
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 2.5rem;
+    }
+
+    .wordmark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .wordmark span { color: var(--accent); }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .doc-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #b5b2ac;
+      font-weight: 500;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .lang-btn {
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .lang-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      padding: 0.25rem 0 0.25rem 1.1rem;
+      position: relative;
+    }
+
+    ul li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .highlight {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 0 5px;
+    }
+
+    [data-lang] { display: none; }
+    [data-lang].visible { display: block; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 0.5px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-header">
+      <a class="wordmark" href="index.html">Pill<span>snap</span></a>
+      <div class="header-right">
+        <div class="doc-label" id="page-title">Datenschutzerklärung</div>
+        <div class="lang-switch">
+          <button class="lang-btn active" onclick="setLang('de')">Deutsch</button>
+          <button class="lang-btn" onclick="setLang('en')">English</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- DEUTSCH -->
+    <div data-lang="de" class="visible">
+
+      <div class="section">
+        <h2>Verantwortlicher</h2>
+        <p>
+          Stefan Hermann<br>
+          Gülser Weg 23<br>
+          12681 Berlin, Germany<br>
+          <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Grundsatz</h2>
+        <p>
+          Pillsnap ist eine <span class="highlight">local-first</span> App. Alle persönlichen Daten –
+          Medikamente, Einnahme-Protokolle und Fotos – werden ausschließlich auf deinem Gerät gespeichert
+          und niemals an einen Server übertragen.
+        </p>
+        <p>
+          Pillsnap ist eine Lifestyle-App zur persönlichen Organisation. Sie ersetzt keine ärztliche Beratung und ist kein Medizinprodukt im Sinne des EU-MDR.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Lokal gespeicherte Daten</h2>
+        <p>Folgende Daten werden in der App gespeichert und verlassen dein Gerät nicht:</p>
+        <ul>
+          <li>Medikamenten-Namen und Dosierungen</li>
+          <li>Einnahme-Intervalle und Einnahmezeiten</li>
+          <li>Einnahme-Protokoll mit Zeitstempeln (UTC)</li>
+          <li>Fotos der Einnahme (gespeichert im App-eigenen Verzeichnis, nicht in der Foto-Bibliothek)</li>
+        </ul>
+        <p style="margin-top:0.75rem">
+          Backups werden lokal erzeugt und nur dann geteilt, wenn du das Backup manuell exportierst.
+          Der Inhalt liegt vollständig in deiner Hand.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Berechtigungen</h2>
+        <ul>
+          <li><strong>Kamera:</strong> Nur zum Aufnehmen von Fotos nach der Einnahme. Bilder werden lokal im App-eigenen Verzeichnis gespeichert, nicht in der Systemgalerie.</li>
+          <li><strong>Benachrichtigungen:</strong> Nur um dich pünktlich an deine Einnahmezeiten zu erinnern. Du kannst Benachrichtigungen jederzeit in den Systemeinstellungen deaktivieren.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Deine Rechte (DSGVO)</h2>
+        <p>
+          Da alle persönlichen Daten ausschließlich lokal auf deinem Gerät liegen, hast du jederzeit
+          vollständige Kontrolle: Du kannst einzelne Medikamente oder Einträge löschen, ein Backup exportieren oder
+          die App inklusive aller Daten deinstallieren.
+        </p>
+        <p>
+          Bei Fragen erreichst du mich unter
+          <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ENGLISH -->
+    <div data-lang="en">
+
+      <div class="section">
+        <h2>Controller</h2>
+        <p>
+          Stefan Hermann<br>
+          Gülser Weg 23<br>
+          12681 Berlin, Germany<br>
+          <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Core principle</h2>
+        <p>
+          Pillsnap is a <span class="highlight">local-first</span> app. All personal data –
+          medications, intake logs and photos – is stored exclusively on your device
+          and is never transmitted to any server.
+        </p>
+        <p>
+          Pillsnap is a lifestyle app for personal organisation. It does not replace medical advice and is not a medical device within the meaning of EU-MDR.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Data stored locally</h2>
+        <p>The following data is stored in the app and never leaves your device:</p>
+        <ul>
+          <li>Medication names and dosages</li>
+          <li>Intake intervals and scheduled times</li>
+          <li>Intake log with timestamps (UTC)</li>
+          <li>Photos of each dose (stored in the app's private directory, not in the system photo library)</li>
+        </ul>
+        <p style="margin-top:0.75rem">
+          Backups are generated locally and only shared when you manually export them.
+          You are in full control of the content.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Permissions</h2>
+        <ul>
+          <li><strong>Camera:</strong> Only for taking photos after a dose. Images are stored locally in the app's private directory, not in the system gallery.</li>
+          <li><strong>Notifications:</strong> Only to remind you of your scheduled intake times. You can disable notifications at any time in your system settings.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Your rights (GDPR)</h2>
+        <p>
+          Since all personal data is stored exclusively on your device, you have full
+          control at all times: you can delete individual medications or entries, export a backup,
+          or uninstall the app along with all its data.
+        </p>
+        <p>
+          For any questions, contact me at
+          <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>.
+        </p>
+      </div>
+
+    </div>
+
+    <footer>
+      <span>© 2026 Stefan Hermann · Pillsnap</span>
+      <a href="mailto:me@stefanhermann.io">me@stefanhermann.io</a>
+    </footer>
+
+  </div>
+
+  <script>
+    function setLang(lang) {
+      document.querySelectorAll('[data-lang]').forEach(el => {
+        el.classList.toggle('visible', el.dataset.lang === lang);
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.trim().toLowerCase().startsWith(lang === 'de' ? 'd' : 'e'));
+      });
+      document.getElementById('page-title').textContent =
+        lang === 'de' ? 'Datenschutzerklärung' : 'Privacy Policy';
+      document.documentElement.lang = lang;
+      localStorage.setItem('pillsnap-lang', lang);
+    }
+
+    (function () {
+      const saved = localStorage.getItem('pillsnap-lang');
+      if (saved && saved !== 'de') setLang(saved);
+    })();
+  </script>
+</body>
+</html>
