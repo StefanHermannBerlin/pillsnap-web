@@ -150,10 +150,41 @@
   footer a { font-size: 12px; color: var(--faint); text-decoration: none; }
   footer a:hover { color: var(--accent); }
 
+  /* CTA + Preis */
+  .cta-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 28px; }
+  .store-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent); color: #fff; text-decoration: none;
+    font-size: 15px; font-weight: 500; padding: 13px 22px; border-radius: 999px;
+    transition: opacity 0.15s;
+  }
+  .store-btn:hover { opacity: 0.88; }
+  .store-btn small { font-size: 11px; opacity: 0.75; font-weight: 400; letter-spacing: 0.04em; }
+  .price-note { font-size: 13px; color: var(--muted); }
+  .price-note strong { color: var(--text); font-weight: 500; }
+
+  /* Screenshot-Galerie */
+  .gallery {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 8px;
+  }
+  .shot { display: flex; flex-direction: column; gap: 12px; }
+  .shot img {
+    width: 100%; height: auto; border-radius: 18px;
+    border: 0.5px solid var(--border); background: var(--surface);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+  }
+  .shot-cap { font-size: 12px; color: var(--muted); line-height: 1.5; text-align: center; }
+
   @media (max-width: 600px) {
     .page { padding: 40px 24px; }
     .two-col { grid-template-columns: 1fr; }
     .hero-headline { font-size: 30px; }
+    .gallery {
+      grid-template-columns: none; grid-auto-flow: column;
+      grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x mandatory;
+      margin: 0 -24px; padding: 4px 24px 12px; gap: 14px;
+    }
+    .shot { scroll-snap-align: start; }
     .flow { flex-direction: column; }
     .flow-step:not(:first-child) { border-left: 0.5px solid var(--border); border-top: none; }
     .flow-step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
@@ -170,7 +201,7 @@
   <header class="header">
     <div class="wordmark">Pill<span>snap</span></div>
     <div class="header-right">
-      <div class="doc-label">App Store — 2026</div>
+      <div class="doc-label">für iPhone</div>
       <div class="lang-switch">
         <button class="lang-btn active" onclick="setLang('de')">Deutsch</button>
         <button class="lang-btn" onclick="setLang('en')">English</button>
@@ -185,6 +216,35 @@
     <div class="hero-eyebrow">App Store</div>
     <h1 class="hero-headline">Der persönliche Nachweis,<br>dass du deine <em>Medikamente</em><br>wirklich genommen hast.</h1>
     <p class="hero-sub">Pillsnap erinnert dich zur richtigen Zeit und dokumentiert jede Einnahme mit einem Foto – auf deinem Gerät, ohne Cloud. Kein Zettelchaos, kein Erraten aus dem Bauchgefühl. Ein klarer, visueller Nachweis für dich und deinen Arzt.</p>
+    <div class="cta-row">
+      <!-- Sobald die App live ist: href auf https://apps.apple.com/de/app/id6771890544 setzen -->
+      <a class="store-btn" href="#">Bald im App Store <small>für iPhone</small></a>
+      <div class="price-note"><strong>14 Tage kostenlos testen.</strong><br>Danach einmalig freischalten – kein Abo.</div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">Ein Blick in die App</div>
+    <div class="gallery">
+      <div class="shot">
+        <img src="img/s1.jpg" alt="Foto-Detail einer dokumentierten Einnahme" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Jede Einnahme mit Foto &amp; Zeitstempel belegt</div>
+      </div>
+      <div class="shot">
+        <img src="img/s7.jpg" alt="Übersicht der Medikamentenliste" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Alle Medikamente übersichtlich verwaltet</div>
+      </div>
+      <div class="shot">
+        <img src="img/s8.jpg" alt="Kalender-Monatsansicht mit Farbkodierung" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Kalender-Rückblick: grün, gelb, orange</div>
+      </div>
+      <div class="shot">
+        <img src="img/s6.jpg" alt="Formular zum Anlegen eines Medikaments" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Neues Medikament in Sekunden angelegt</div>
+      </div>
+    </div>
   </section>
 
   <hr class="rule">
@@ -245,7 +305,7 @@
   <hr class="rule">
 
   <section>
-    <div class="section-label">MVP — Kernfeatures</div>
+    <div class="section-label">Kernfunktionen</div>
     <div class="features">
       <div class="feature">
         <div class="feature-num">01</div>
@@ -321,6 +381,35 @@
     <div class="hero-eyebrow">App Store</div>
     <h1 class="hero-headline">The personal proof that<br>you actually took your<br><em>medication</em>.</h1>
     <p class="hero-sub">Pillsnap reminds you at the right time and documents every dose with a photo – on your device, without a cloud. No paper chaos, no guessing from gut feeling. Clear, visual proof for yourself and your doctor.</p>
+    <div class="cta-row">
+      <!-- Once live: set href to https://apps.apple.com/app/id6771890544 -->
+      <a class="store-btn" href="#">Coming soon to the App Store <small>for iPhone</small></a>
+      <div class="price-note"><strong>Try free for 14 days.</strong><br>Then unlock once – no subscription.</div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="section-label">A look inside</div>
+    <div class="gallery">
+      <div class="shot">
+        <img src="img/s1.jpg" alt="Photo detail of a documented dose" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Every dose backed by a photo &amp; timestamp</div>
+      </div>
+      <div class="shot">
+        <img src="img/s7.jpg" alt="Overview of the medication list" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">All your medications, neatly managed</div>
+      </div>
+      <div class="shot">
+        <img src="img/s8.jpg" alt="Calendar month view with color coding" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Calendar history: green, yellow, orange</div>
+      </div>
+      <div class="shot">
+        <img src="img/s6.jpg" alt="Form for adding a medication" loading="lazy" width="760" height="1645">
+        <div class="shot-cap">Add a new medication in seconds</div>
+      </div>
+    </div>
   </section>
 
   <hr class="rule">
@@ -381,7 +470,7 @@
   <hr class="rule">
 
   <section>
-    <div class="section-label">MVP — Core features</div>
+    <div class="section-label">Core features</div>
     <div class="features">
       <div class="feature">
         <div class="feature-num">01</div>
